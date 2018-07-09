@@ -78,10 +78,37 @@ function shoppingCart() {
                     console.log("We currently have " + results[0].stockQuantity + " " + results[0].productName + ".");
                     console.log("Your order of " + answer.Quantity + " " + results[0].productName + "is now being processed.");
                 // }
+                var newQty = results[0].stockQuantity - answer.Quantity
+                var totalCost = results[0].price * answer.Quantity
+                console.log(results[0].price)
+                console.log(totalCost)
+                processOrder(answer.ProductID, newQty, totalCost)
             } else {
-                console.log("Not enough of this product is stock");
+                console.log("Not enough of this product in stock");
             }
-            // displayProducts();
+            displayProducts();
         })
     })
 };
+function processOrder(id, qti, price) {
+    console.log(id, qti, price)
+    
+    connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+            {
+                stockQuantity: qti
+            }, {
+                itemID: id
+            }
+
+        ],
+        function(err, res) {
+            console.log(res.affectedRows + " product(s) updated!\n");
+            console.log(price + "Price")
+            displayProducts();
+        }
+    )
+
+}
+
