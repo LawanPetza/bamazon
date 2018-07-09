@@ -23,16 +23,16 @@ connection.connect(function (err) {
 function displayProducts() {
     connection.query("SELECT * FROM products;", function (err, results) {
         if (err) throw err;
-        console.log(results)
+        // console.log(results)
     
             // for (var i = 0; i < results.lenght; i++) {
             // console.log(results)
             // }
         
 
-        // for (var i = 0; i < results.lenght; i++) {
-        //     console.log("ID: " + results[i].itemID + " | " + "Product: " + results[i].productName + " | " + "Department: " + results[i].departmentName + " | " + "Price: " + results[i].price + " | " + "Quantity: " + results[i].stockQuantity)
-        // }
+        for (var i = 0; i < results.length; i++) {
+            console.log("ID: " + results[i].itemID + " | " + "Product: " + results[i].productName + " | " + "Department: " + results[i].departmentName + " | " + "Price: " + results[i].price + " | " + "Quantity: " + results[i].stockQuantity)
+        }
         
         shoppingCart();
 
@@ -67,16 +67,21 @@ function shoppingCart() {
 
         }
     ]).then(function (answer) {
-        connection.query("SELECT * FROM products WHERE itemID = " + answer.Quantity, function (err, results) {
-            if (answer.Quantity <= results) {
-                for (var i = 0; i < results.lenght; i++) {
-                    console.log("We currently have " + results[i].stockQuantity + " " + results[i].productName + ".");
-                    console.log("Your order of " + results[i].stockQuantity + " " + results[i].productName + "is now being processed.");
-                }
+        console.log(answer)
+
+        connection.query("SELECT * FROM products WHERE itemID = " + answer.ProductID, function (err, results) {
+            console.log(results[0].stockQuantity)
+            console.log(answer.Quantity)
+
+            if (answer.Quantity <= results[0].stockQuantity) {
+                // for (var i = 0; i < results.length; i++) {
+                    console.log("We currently have " + results[0].stockQuantity + " " + results[0].productName + ".");
+                    console.log("Your order of " + answer.Quantity + " " + results[0].productName + "is now being processed.");
+                // }
             } else {
                 console.log("Not enough of this product is stock");
             }
-            displayProducts();
+            // displayProducts();
         })
     })
 };
